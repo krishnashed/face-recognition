@@ -79,7 +79,7 @@ class FaceDetector(Module):
 
     def preprocess(self, frame):
         self.input_size = frame.shape
-        return resize_input(frame, self.input_shape, self.nchw_layout)
+        return resize_input(frame, self.input_shape, self.nchw_layout) # nchw_layout is a boolean value
 
     def start_async(self, frame):
         input = self.preprocess(frame)

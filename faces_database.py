@@ -22,9 +22,16 @@ import cv2
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 from scipy.spatial.distance import cosine
+import requests
 
 from face_detector import FaceDetector
 
+def send_img(frame):
+    _, img_encoded = cv2.imencode('.jpg', frame)
+    img_bytes = img_encoded.tobytes()
+    url = 'http://localhost:5000/upload'
+    files = {'image': ('myimage.jpg', img_bytes, 'image/jpeg')}
+    response = requests.post(url, files=files)
 
 class FacesDatabase:
     IMAGE_EXTENSIONS = ['jpg', 'png']
@@ -82,8 +89,11 @@ class FacesDatabase:
                     if mm < 0:
                         crop = orig_image[int(roi.position[1]):int(roi.position[1]+roi.size[1]),
                                int(roi.position[0]):int(roi.position[0]+roi.size[0])]
-                        name = self.ask_to_save(crop)
+                        name = self.ask_to_save(crop) # crop is the perfect face crop
+
+                        cv2.imshow(crop)
                         self.dump_faces(crop, descriptor, name)
+
                 else:
                     log.debug("Adding label {} to the gallery".format(label))
                     self.add_item(descriptor, label)
@@ -143,6 +153,7 @@ class FacesDatabase:
     def match_faces(self, descriptors, match_algo='HUNGARIAN'):
         database = self.database
         distances = np.empty((len(descriptors), len(database)))
+        # descriptors = vector of face features
         for i, desc in enumerate(descriptors):
             for j, identity in enumerate(database):
                 dist = []
