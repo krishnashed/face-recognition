@@ -92,5 +92,5 @@ python3 face_recognition_demo.py \
   -m_lm <path_to_model>/landmarks-regression-retail-0009.xml \
   -m_reid <path_to_model>/face-reidentification-retail-0095.xml \
   -fg "<path_to_face_gallery/face_gallery" \
-   --allow_grow \
+  --allow_grow
 ```
